@@ -1,4 +1,4 @@
-package tobySpring.helloSpring;
+package tobySpring.helloSpring.exrate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
