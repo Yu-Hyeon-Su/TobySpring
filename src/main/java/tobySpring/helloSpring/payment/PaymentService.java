@@ -19,11 +19,6 @@ import java.time.LocalDateTime;
      public Payment prepare(Long orderId, String currency, BigDecimal foreignCurrencyAmount) throws IOException {
         BigDecimal exRate = exRateProvider.getExRate(currency);
 
-        BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exRate);
-
-        LocalDateTime validUntil = LocalDateTime.now(clock).plusMinutes(30);
-
-        return new Payment(orderId, currency, exRate, foreignCurrencyAmount,
-                convertedAmount, validUntil);
+        return Payment.createPrepared(orderId, currency, exRate, foreignCurrencyAmount, LocalDateTime.now(clock));
     }
 }
