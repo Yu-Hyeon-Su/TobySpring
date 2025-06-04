@@ -2,6 +2,10 @@ package tobySpring.helloSpring.exrate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import tobySpring.helloSpring.api.ApiExecutor;
+import tobySpring.helloSpring.api.ErApiExRateExtractor;
+import tobySpring.helloSpring.api.ExRateExtractor;
+import tobySpring.helloSpring.api.SimpleApiExecutor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +21,11 @@ public class WebApiExRateProvider implements ExRateProvider {
     public BigDecimal getExRate(String currency) {
         String url = "https://open.er-api.com/v6/latest/" + currency;
 
+        return runApiForExRate(url, new SimpleApiExecutor(), new ErApiExRateExtractor());
+    }
+
+    private static BigDecimal runApiForExRate(String url, ApiExecutor apiExecutor,
+                                              ExRateExtractor exRateExtractor) {
         URI uri;
         try {
             uri = new URI(url);
@@ -26,30 +35,15 @@ public class WebApiExRateProvider implements ExRateProvider {
 
         String body;
         try {
-            body = executeApi(uri);
+            body = apiExecutor.execute(uri);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            return parseExRate(body);
+            return exRateExtractor.extract(body);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static BigDecimal parseExRate(String body) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        ExRateData data = mapper.readValue(body, ExRateData.class);
-        return data.rates().get("KRW");
-    }
-
-    private static String executeApi(URI uri) throws IOException {
-        String body;
-        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            body = br.lines().collect(Collectors.joining());
-        }
-        return body;
     }
 }
