@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.stream.Collectors;
 
 public class WebApiExRateProvider implements ExRateProvider {
@@ -27,20 +26,30 @@ public class WebApiExRateProvider implements ExRateProvider {
 
         String body;
         try {
-            HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                body = br.lines().collect(Collectors.joining());
-            }
+            body = executeApi(uri);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            ExRateData data = mapper.readValue(body, ExRateData.class);
-            return data.rates().get("KRW");
+            return parseExRate(body);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static BigDecimal parseExRate(String body) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ExRateData data = mapper.readValue(body, ExRateData.class);
+        return data.rates().get("KRW");
+    }
+
+    private static String executeApi(URI uri) throws IOException {
+        String body;
+        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            body = br.lines().collect(Collectors.joining());
+        }
+        return body;
     }
 }
