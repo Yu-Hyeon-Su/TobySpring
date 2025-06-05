@@ -2,10 +2,12 @@ package tobySpring.helloSpring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import tobySpring.helloSpring.api.ApiTemplate;
 import tobySpring.helloSpring.api.ErApiExtractor;
 import tobySpring.helloSpring.api.SimpleApiExecutor;
 import tobySpring.helloSpring.exrate.ExRateProvider;
+import tobySpring.helloSpring.exrate.RestTemplateExRateProvider;
 import tobySpring.helloSpring.exrate.WebApiExRateProvider;
 import tobySpring.helloSpring.payment.PaymentService;
 
@@ -19,13 +21,13 @@ public class PaymentConfig {
     }
 
     @Bean
-    public ApiTemplate apiTemplate() {
-        return new ApiTemplate(new SimpleApiExecutor(), new ErApiExtractor());
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     @Bean
     public ExRateProvider exRateProvider() {
-        return new WebApiExRateProvider(apiTemplate());
+        return new RestTemplateExRateProvider(restTemplate());
     }
 
     @Bean
