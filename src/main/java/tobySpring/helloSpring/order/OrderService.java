@@ -1,10 +1,9 @@
 package tobySpring.helloSpring.order;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
-import tobySpring.helloSpring.data.OrderRepository;
+import tobySpring.helloSpring.data.JpaOrderRepository;
 
 import java.math.BigDecimal;
 
