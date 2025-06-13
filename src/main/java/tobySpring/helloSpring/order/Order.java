@@ -19,6 +19,10 @@ public class Order {
         this.no = no;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
