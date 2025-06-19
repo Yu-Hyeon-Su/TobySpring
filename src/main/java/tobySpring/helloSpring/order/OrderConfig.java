@@ -15,8 +15,12 @@ public class OrderConfig {
     @Bean
     public OrderService orderService(
             PlatformTransactionManager transactionManager,
-            OrderRepository orderRepository) {
-        return new OrderService(orderRepository, transactionManager);
+            OrderRepository orderRepository
+    ) {
+        return new OrderServiceTxProxy(
+                new OrderServiceImpl(orderRepository),
+                transactionManager
+        );
     }
 
     @Bean

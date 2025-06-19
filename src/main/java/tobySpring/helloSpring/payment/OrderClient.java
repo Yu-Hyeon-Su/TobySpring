@@ -6,6 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import tobySpring.helloSpring.order.Order;
 import tobySpring.helloSpring.order.OrderConfig;
 import tobySpring.helloSpring.order.OrderService;
+import tobySpring.helloSpring.order.OrderServiceImpl;
 
 import java.math.BigDecimal;
 
